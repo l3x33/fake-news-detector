@@ -1,6 +1,7 @@
 
 # Instruction: 
 # 1. pip install flask joblib scikit-learn nltk trafilatura requests
+# Add te
 # 2. python app.py
 # -> http://127.0.0.1:5000
 
@@ -10,6 +11,7 @@ import numpy as np
 from pathlib import Path
 from flask import Flask, render_template, request, jsonify
 import trafilatura
+import sklearn
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
@@ -22,9 +24,17 @@ except LookupError:
 
 MODELS_DIR = Path(__file__).parent / 'models'
 vectorizer  = joblib.load(MODELS_DIR / 'vectorizer.joblib')
-final_model = joblib.load(MODELS_DIR / 'lr_final.joblib')
+final_model = joblib.load(MODELS_DIR / 'lsvc_final.joblib')
 feature_names = np.array(vectorizer.get_feature_names_out())
-coefficients  = final_model.coef_[0]
+
+def _get_inner_estimator(calibrated_classifier):
+    """Compatibility shim: sklearn >=1.4 renamed base_estimator -> estimator
+    on the inner _CalibratedClassifier objects."""
+    return getattr(calibrated_classifier, 'estimator', None) or \
+        getattr(calibrated_classifier, 'base_estimator')
+
+inner_estimators = [_get_inner_estimator(cc) for cc in final_model.calibrated_classifiers_]
+coefficients = np.mean([est.coef_[0] for est in inner_estimators], axis=0)
 
 STOP_WORDS = set(stopwords.words('english'))
 stemmer    = PorterStemmer()
@@ -58,7 +68,7 @@ def msg(lang, key, **kwargs):
     return text.format(**kwargs) if kwargs else text
 
 
-def clean_full(text):
+def clean(text):
     text = str(text).lower()
     text = re.sub(r'https?://\S+|www\.\S+', '', text)
     text = re.sub(r'\S+@\S+|@\w+|#', '', text)
@@ -84,7 +94,7 @@ def predict(text, lang='fr'):
     """Pipeline complet : nettoyage -> vectorisation -> prédiction.
     Retourne la probabilité, la classe, et les mots les plus contributifs
     présents dans le texte (pour l'explication / le panneau 'indices')."""
-    cleaned = clean_full(text)
+    cleaned = clean(text)
     if len(cleaned.split()) < 5:
         raise ValueError(msg(lang, 'too_short'))
 
