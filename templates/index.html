@@ -39,7 +39,7 @@ body{
   padding:56px 24px 120px;
 }
 
-/* ── Header ───────────────────────────────────────────────── */
+/* Header  */
 .header-row{
   display:flex;
   align-items:flex-start;
@@ -108,7 +108,7 @@ h1{
   margin:0 0 40px;
 }
 
-/* ── Input panel ──────────────────────────────────────────── */
+/* Input */
 .panel{
   background:var(--paper);
   border-radius:3px;
@@ -190,7 +190,7 @@ button#scan-btn:disabled{opacity:0.5; cursor:wait;}
   color:#8A8470;
 }
 
-/* ── Error state ──────────────────────────────────────────── */
+/* Error state */
 .error-box{
   display:none;
   margin-top:18px;
@@ -203,7 +203,7 @@ button#scan-btn:disabled{opacity:0.5; cursor:wait;}
   color:#F0C9C4;
 }
 
-/* ── Results ──────────────────────────────────────────────── */
+/*  Results  */
 #results{display:none; margin-top:36px;}
 
 .verdict-row{
@@ -420,7 +420,7 @@ button#scan-btn:disabled{opacity:0.5; cursor:wait;}
 </div>
 
 <script>
-// ── i18n ────────────────────────────────────────────────────────────────
+
 const I18N = {
   fr: {
     eyebrow: "Pipeline ISOT &middot; Régression Logistique &middot; TF-IDF",
@@ -519,7 +519,7 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
   });
 });
 
-// ── App logic ─────────────────────────────────────────────────────────
+// Logic
 const tabs = document.querySelectorAll('.tab');
 const inputText = document.getElementById('input-text');
 const inputUrl = document.getElementById('input-url');

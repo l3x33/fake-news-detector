@@ -1,7 +1,6 @@
 
 # Instruction: 
 # 1. pip install flask joblib scikit-learn nltk trafilatura requests
-# Add te
 # 2. python app.py
 # -> http://127.0.0.1:5000
 
@@ -11,7 +10,6 @@ import numpy as np
 from pathlib import Path
 from flask import Flask, render_template, request, jsonify
 import trafilatura
-import sklearn
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
